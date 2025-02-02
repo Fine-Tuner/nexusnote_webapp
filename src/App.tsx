@@ -168,12 +168,24 @@ const styles = {
 // 하이라이트 팝업 컴포넌트
 const HighlightPopup = ({
   comment,
+  onDelete,
 }: {
   comment: { text: string; emoji: string };
+  onDelete: () => void;
 }) =>
   comment.text ? (
     <div className="Highlight__popup">
       {comment.emoji} {comment.text}
+      <button
+        className="popup-delete-button"
+        onClick={(e) => {
+          e.stopPropagation()
+          onDelete()
+        }}
+        title="Delete highlight"
+      >
+        ×
+      </button>
     </div>
   ) : null;
 
@@ -412,7 +424,7 @@ function App() {
 
                   return (
                     <Popup
-                      popupContent={<HighlightPopup {...highlight} />}
+                      popupContent={<HighlightPopup comment={highlight.comment} onDelete={() => handleDeleteHighlight(highlight.id)} />}
                       onMouseOver={(popupContent) => setTip(highlight, (highlight) => popupContent)}
                       onMouseOut={hideTip}
                       key={index}
