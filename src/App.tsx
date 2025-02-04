@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { IHighlight, NewHighlight } from "react-pdf-highlighter";
 import { AreaHighlight, Highlight, PdfHighlighter, PdfLoader, Popup, Tip } from "react-pdf-highlighter";
@@ -252,7 +253,7 @@ const LeftSidebar = ({
   };
 
   return (
-    <div style={styles.getLeftSidebarStyle(isOpen)} className="bg-red-900">
+    <div style={styles.getLeftSidebarStyle(isOpen)} className="bg-blue-900">
       <button style={styles.toggleButton} onClick={onToggle}>
         {isOpen ? "←" : "→"}
       </button>
@@ -336,6 +337,7 @@ function App() {
 
   return (
     <div style={styles.container}>
+      <Button>Click me</Button>
       <LeftSidebar
         isOpen={isLeftSidebarOpen}
         onToggle={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
