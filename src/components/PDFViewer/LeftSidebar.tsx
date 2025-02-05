@@ -1,4 +1,10 @@
+import { Button } from "@/components/shadcn/button";
+import { Card, CardContent } from "@/components/shadcn/Card";
+import { Input } from "@/components/shadcn/Input";
+import { ScrollArea } from "@/components/shadcn/Scroll-area";
 import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, Pencil, Search, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { IHighlight } from "react-pdf-highlighter";
 
 interface LeftSidebarProps {
@@ -10,51 +16,82 @@ interface LeftSidebarProps {
 }
 
 const LeftSidebar = ({ isOpen, onToggle, highlights, onHighlightClick, onDeleteHighlight }: LeftSidebarProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     onDeleteHighlight(id);
   };
 
+  const filteredHighlights = highlights.filter(
+    (highlight) =>
+      highlight.content.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      highlight.comment?.text.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div
       className={cn(
-        "h-screen border-r border-gray-200 transition-[width] duration-300 ease-in-out overflow-hidden bg-blue-900",
+        "h-screen border-r transition-[width] duration-300 ease-in-out overflow-hidden bg-background",
         isOpen ? "w-[300px]" : "w-[50px]"
       )}
     >
-      <button
-        className="w-[50px] h-[50px] flex items-center justify-center cursor-pointer text-xl text-gray-500 bg-transparent border-none border-b border-gray-200"
-        onClick={onToggle}
-      >
-        {isOpen ? "←" : "→"}
-      </button>
-      <div className="w-[300px] h-full p-5">
-        <div className="mb-3 text-sm font-semibold text-gray-900">Highlights</div>
-        <div className="mt-5">
-          {highlights.map((highlight) => (
-            <div key={highlight.id} className="relative group">
-              <div
-                className="p-3 transition-colors border-b border-gray-100 cursor-pointer hover:bg-gray-50"
-                onClick={() => onHighlightClick(highlight)}
-              >
-                <div className="mb-1 text-sm leading-relaxed text-gray-700 line-clamp-2">{highlight.content.text}</div>
-                {highlight.comment && (
-                  <div className="text-xs text-gray-500">
-                    {highlight.comment.emoji} {highlight.comment.text}
-                  </div>
-                )}
-                <button
-                  className="absolute flex items-center justify-center w-6 h-6 text-sm text-gray-600 transition-all bg-gray-100 border-none rounded-full opacity-0 cursor-pointer right-3 top-3 group-hover:opacity-100 hover:bg-gray-200 hover:text-gray-800"
-                  onClick={(e) => handleDelete(e, highlight.id)}
-                  title="Delete highlight"
-                >
-                  ×
-                </button>
-              </div>
+      <Button variant="ghost" size="icon" className="w-[50px] h-[50px]" onClick={onToggle}>
+        {isOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+      </Button>
+
+      {isOpen && (
+        <div className="w-[300px] h-[calc(100vh-50px)]">
+          <div className="p-4">
+            <div className="relative mb-4">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="검색"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8"
+              />
             </div>
-          ))}
+            <ScrollArea className="h-[calc(100vh-130px)]">
+              <div className="space-y-3">
+                {filteredHighlights.map((highlight) => (
+                  <Card
+                    key={highlight.id}
+                    className="transition-colors cursor-pointer hover:bg-accent/50"
+                    onClick={() => onHighlightClick(highlight)}
+                  >
+                    <CardContent className="p-3 space-y-2">
+                      <div className="flex items-start justify-between">
+                        <h3 className="text-sm font-medium">페이지 1의 주요 내용</h3>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="w-6 h-6"
+                            onClick={(e) => handleDelete(e, highlight.id)}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="w-6 h-6">
+                            <Pencil className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-2">{highlight.content.text}</p>
+                      {highlight.comment && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <span>{highlight.comment.emoji}</span>
+                          <span>{highlight.comment.text}</span>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

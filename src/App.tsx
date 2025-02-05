@@ -6,7 +6,6 @@ import "./App.css";
 import HighlightPopup from "./components/PDFViewer/HighLightPopup";
 import LeftSidebar from "./components/PDFViewer/LeftSidebar";
 import RightSidebar from "./components/PDFViewer/RightSidebar";
-import { Button } from "./components/shadcn/button";
 
 function App() {
   const [highlights, setHighlights] = useState<IHighlight[]>([]);
@@ -59,8 +58,7 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
-      <Button>Click me</Button>
+    <div className="flex w-screen h-screen overflow-hidden">
       <LeftSidebar
         isOpen={isLeftSidebarOpen}
         onToggle={() => setIsLeftSidebarOpen(!isLeftSidebarOpen)}
@@ -68,7 +66,7 @@ function App() {
         onHighlightClick={handleHighlightClick}
         onDeleteHighlight={handleDeleteHighlight}
       />
-      <div className="flex-1 overflow-hidden relative">
+      <div className="relative flex-1 overflow-hidden">
         <div className="absolute inset-0 overflow-auto bg-gray-50">
           <PdfLoader url="/pdf/sample.pdf" beforeLoad={<div>Loading...</div>}>
             {(pdfDocument) => (
