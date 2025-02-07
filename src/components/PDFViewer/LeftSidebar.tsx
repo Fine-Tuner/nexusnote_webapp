@@ -32,64 +32,61 @@ const LeftSidebar = ({ isOpen, onToggle, highlights, onHighlightClick, onDeleteH
   return (
     <div
       className={cn(
-        "h-screen border-r transition-[width] duration-300 ease-in-out overflow-hidden bg-background",
+        "h-screen border-r transition-[width] duration-300 ease-in-out overflow-hidden bg-background p-[8px] bg-gray-50 flex flex-col gap-[10px]",
         isOpen ? "w-[300px]" : "w-[50px]"
       )}
     >
-      <Button variant="ghost" size="icon" className="w-[50px] h-[50px]" onClick={onToggle}>
+      <Button variant="ghost" size="icon" className="w-[40px] h-[40px] bg-gray-900" onClick={onToggle}>
         {isOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
       </Button>
 
       {isOpen && (
-        <div className="w-[300px] h-[calc(100vh-50px)]">
-          <div className="p-4">
-            <div className="relative mb-4">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="검색"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8"
-              />
-            </div>
-            <ScrollArea className="h-[calc(100vh-130px)]">
-              <div className="space-y-3">
-                {filteredHighlights.map((highlight) => (
-                  <Card
-                    key={highlight.id}
-                    className="transition-colors cursor-pointer hover:bg-accent/50"
-                    onClick={() => onHighlightClick(highlight)}
-                  >
-                    <CardContent className="p-3 space-y-2">
-                      <div className="flex items-start justify-between">
-                        <h3 className="text-sm font-medium">페이지 1의 주요 내용</h3>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="w-6 h-6"
-                            onClick={(e) => handleDelete(e, highlight.id)}
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="w-6 h-6">
-                            <Pencil className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">{highlight.content.text}</p>
-                      {highlight.comment && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <span>{highlight.comment.emoji}</span>
-                          <span>{highlight.comment.text}</span>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </ScrollArea>
+        <div className="w-full h-[calc(100vh-50px)]">
+          <div className="relative mb-4">
+            <Input
+              placeholder="검색"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-gray-100 w-full text-black box-border"
+            />
           </div>
+          <ScrollArea className="h-[calc(100vh-130px)]">
+            <div className="space-y-3">
+              {filteredHighlights.map((highlight) => (
+                <Card
+                  key={highlight.id}
+                  className="transition-colors cursor-pointer hover:bg-accent/50"
+                  onClick={() => onHighlightClick(highlight)}
+                >
+                  <CardContent className="p-3 space-y-2">
+                    <div className="flex items-start justify-between">
+                      <h3 className="text-sm font-medium">페이지 1의 주요 내용</h3>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-6 h-6"
+                          onClick={(e) => handleDelete(e, highlight.id)}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="w-6 h-6">
+                          <Pencil className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{highlight.content.text}</p>
+                    {highlight.comment && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <span>{highlight.comment.emoji}</span>
+                        <span>{highlight.comment.text}</span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </ScrollArea>
         </div>
       )}
     </div>
