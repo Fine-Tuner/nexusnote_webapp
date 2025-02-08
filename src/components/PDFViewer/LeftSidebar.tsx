@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Pencil, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { IHighlight } from "react-pdf-highlighter";
+import LucideIcon from "../icon/icon";
 
 interface LeftSidebarProps {
   isOpen: boolean;
@@ -36,8 +37,12 @@ const LeftSidebar = ({ isOpen, onToggle, highlights, onHighlightClick, onDeleteH
         isOpen ? "w-[300px]" : "w-[50px]"
       )}
     >
-      <Button variant="ghost" size="icon" className="w-[40px] h-[40px] bg-gray-900" onClick={onToggle}>
-        {isOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+      <Button variant="ghost" size="icon" className="w-[40px] h-[40px]" onClick={onToggle}>
+        {isOpen ? (
+          <LucideIcon name="ChevronLeft" className="w-4 h-4" />
+        ) : (
+          <LucideIcon name="ChevronRight" className="w-4 h-4" />
+        )}
       </Button>
 
       {isOpen && (
