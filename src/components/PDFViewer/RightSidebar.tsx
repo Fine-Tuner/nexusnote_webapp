@@ -9,7 +9,7 @@ interface RightSidebarProps {
 
 const RightSidebar = ({ selectedContent, selectedComment }: RightSidebarProps) => {
   return (
-    <div className="w-[400px] h-screen border-l bg-background">
+    <div className="w-[400px] h-screen border-l bg-background bg-gray-800">
       <ScrollArea className="h-full">
         <div className="p-6 space-y-6">
           {(selectedContent || selectedComment) && (
@@ -36,7 +36,7 @@ const RightSidebar = ({ selectedContent, selectedComment }: RightSidebarProps) =
             </Card>
           )}
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="text-lg">관련 노드</CardTitle>
             </CardHeader>
@@ -70,7 +70,7 @@ const RightSidebar = ({ selectedContent, selectedComment }: RightSidebarProps) =
                 </button>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </ScrollArea>
     </div>

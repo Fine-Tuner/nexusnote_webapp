@@ -80,6 +80,7 @@ function App() {
               {(pdfDocument) => (
                 <PdfHighlighter
                   pdfDocument={pdfDocument}
+                  key={pdfDocument.numPages}
                   enableAreaSelection={(event) => event.altKey}
                   onScrollChange={resetHash}
                   scrollRef={(scrollTo) => {
