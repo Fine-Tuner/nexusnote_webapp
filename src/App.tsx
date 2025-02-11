@@ -25,7 +25,7 @@ function App() {
 
   // MSW 테스트
   useEffect(() => {
-    fetch("http://localhost:5173/api/example")
+    fetch("http://localhost:5173/api/getSimilarNodes?contents=test")
       .then((res) => res.json())
       .then((data) => console.log("MSW 테스트 응답:", data))
       .catch((error) => console.error("MSW 테스트 에러:", error));
@@ -55,8 +55,42 @@ function App() {
   }, [scrollToHighlightFromHash]);
 
   // 하이라이트 추가
-  const addHighlight = (highlight: NewHighlight) => {
-    setHighlights((prev) => [{ ...highlight, id: String(Math.random()).slice(2) }, ...prev]);
+  const addHighlight = async (highlight: NewHighlight) => {
+    const newHighlight = { ...highlight, id: String(Math.random()).slice(2) };
+
+    try {
+      const response = await fetch("http://localhost:5173/api/addAnnotation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          file_id: "sample.pdf",
+          page_number: highlight.position.pageNumber,
+          contents: highlight.content.text || "",
+          comment: highlight.comment?.text,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add annotation");
+      }
+
+      // 저장된 어노테이션 데이터 확인
+      const savedAnnotation = await response.json();
+      console.log("저장된 어노테이션:", savedAnnotation);
+
+      // 전체 어노테이션 목록 확인
+      const allAnnotationsResponse = await fetch("http://localhost:5173/api/getAnnotations");
+      const allAnnotations = await allAnnotationsResponse.json();
+      console.log("저장된 전체 어노테이션 목록:", allAnnotations);
+
+      setHighlights((prev) => [newHighlight, ...prev]);
+    } catch (error) {
+      console.error("어노테이션 추가 중 에러 발생:", error);
+      // 에러가 발생해도 UI에는 추가 (나중에 동기화 로직 추가 필요)
+      setHighlights((prev) => [newHighlight, ...prev]);
+    }
   };
 
   const handleHighlightClick = (highlight: IHighlight) => {
