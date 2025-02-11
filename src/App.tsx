@@ -22,6 +22,15 @@ function App() {
   const [selectedComment, setSelectedComment] = useState<{ text: string; emoji: string } | null>(null);
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const scrollViewerTo = useRef((highlight: IHighlight) => {});
+
+  // MSW 테스트
+  useEffect(() => {
+    fetch("http://localhost:5173/api/example")
+      .then((res) => res.json())
+      .then((data) => console.log("MSW 테스트 응답:", data))
+      .catch((error) => console.error("MSW 테스트 에러:", error));
+  }, []);
+
   // URL 해시 관련 함수들
   const parseIdFromHash = () => document.location.hash.slice("#highlight-".length);
   const resetHash = () => {
