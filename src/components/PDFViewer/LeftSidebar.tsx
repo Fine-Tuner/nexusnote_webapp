@@ -14,12 +14,20 @@ interface LeftSidebarProps {
   highlights: IHighlight[];
   onHighlightClick: (highlight: IHighlight) => void;
   onDeleteHighlight: (id: string) => void;
+  setHighlightSelected: (selected: boolean) => void;
 }
 
 const MIN_WIDTH = 300;
 const MAX_WIDTH = 600;
 
-const LeftSidebar = ({ isOpen, onToggle, highlights, onHighlightClick, onDeleteHighlight }: LeftSidebarProps) => {
+const LeftSidebar = ({
+  isOpen,
+  onToggle,
+  highlights,
+  onHighlightClick,
+  onDeleteHighlight,
+  setHighlightSelected,
+}: LeftSidebarProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [width, setWidth] = useState(MIN_WIDTH);
   const [isResizing, setIsResizing] = useState(false);
@@ -61,6 +69,11 @@ const LeftSidebar = ({ isOpen, onToggle, highlights, onHighlightClick, onDeleteH
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     onDeleteHighlight(id);
+  };
+
+  const handleHighlightClick = (highlight: IHighlight) => {
+    onHighlightClick(highlight);
+    setHighlightSelected(true);
   };
 
   const filteredHighlights = highlights.filter(
@@ -108,7 +121,7 @@ const LeftSidebar = ({ isOpen, onToggle, highlights, onHighlightClick, onDeleteH
                   <Card
                     key={highlight.id}
                     className="transition-colors cursor-pointer hover:bg-accent/50"
-                    onClick={() => onHighlightClick(highlight)}
+                    onClick={() => handleHighlightClick(highlight)}
                   >
                     <CardContent className="p-3 space-y-2">
                       <div className="flex items-start justify-between">

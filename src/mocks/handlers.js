@@ -3,7 +3,21 @@ import { http } from "msw";
 // 메모리에 데이터를 저장하기 위한 임시 저장소
 const store = {
   annotations: [],
-  nodes: [],
+  nodes: [
+    {
+      node_id: "test_unique_node_id",
+      comment: "this is test comment",
+      annotations: [
+        {
+          id: 1,
+          fileName: "sample.pdf",
+          pageNumber: 1,
+          contents: "this is annotation contents",
+          comment: "this is annotation comment",
+        },
+      ],
+    },
+  ],
 };
 
 export const handlers = [
@@ -33,14 +47,10 @@ export const handlers = [
     });
   }),
 
-  // 유사 노드 검색 API
+  // 추천 노드 API
   http.get("http://localhost:5173/api/getSimilarNodes", ({ request }) => {
-    const url = new URL(request.url);
-    const contents = url.searchParams.get("contents");
-
-    // 실제로는 더 복잡한 유사도 검색 로직이 들어가야 하지만,
     // 목업에서는 간단히 모든 노드를 반환
-    const similarNodes = store.nodes.filter((node) => node.annotations.some((ann) => ann.contents.includes(contents)));
+    const similarNodes = store.nodes;
 
     return new Response(JSON.stringify({ conceptNodeList: similarNodes }), {
       status: 200,
@@ -73,6 +83,33 @@ export const handlers = [
     store.nodes.push(newNode);
     return new Response(JSON.stringify(newNode), {
       status: 201,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+
+  // 노드 업데이트 API
+  http.put("http://localhost:5173/api/updateNode", async ({ request }) => {
+    const body = await request.json();
+    const nodeIndex = store.nodes.findIndex((node) => node.node_id === body.node_id);
+
+    if (nodeIndex === -1) {
+      return new Response(JSON.stringify({ error: "Node not found" }), {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    store.nodes[nodeIndex] = {
+      ...store.nodes[nodeIndex],
+      ...body,
+    };
+
+    return new Response(JSON.stringify(store.nodes[nodeIndex]), {
+      status: 200,
       headers: {
         "Content-Type": "application/json",
       },

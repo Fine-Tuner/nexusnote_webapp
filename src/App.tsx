@@ -21,15 +21,8 @@ function App() {
   const [selectedContent, setSelectedContent] = useState("");
   const [selectedComment, setSelectedComment] = useState<{ text: string; emoji: string } | null>(null);
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
+  const [highlightSelected, setHighlightSelected] = useState(false);
   const scrollViewerTo = useRef((highlight: IHighlight) => {});
-
-  // MSW 테스트
-  useEffect(() => {
-    fetch("http://localhost:5173/api/getSimilarNodes?contents=test")
-      .then((res) => res.json())
-      .then((data) => console.log("MSW 테스트 응답:", data))
-      .catch((error) => console.error("MSW 테스트 에러:", error));
-  }, []);
 
   // URL 해시 관련 함수들
   const parseIdFromHash = () => document.location.hash.slice("#highlight-".length);
@@ -65,8 +58,9 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          file_id: "sample.pdf",
-          page_number: highlight.position.pageNumber,
+          id: Math.floor(Math.random() * 1000000),
+          fileName: "sample.pdf",
+          pageNumber: highlight.position.pageNumber,
           contents: highlight.content.text || "",
           comment: highlight.comment?.text,
         }),
@@ -105,6 +99,7 @@ function App() {
     if (highlights.find((h) => h.id === id)?.content.text === selectedContent) {
       setSelectedContent("");
       setSelectedComment(null);
+      setHighlightSelected(false);
     }
   };
   return (
@@ -116,6 +111,7 @@ function App() {
           highlights={highlights}
           onHighlightClick={handleHighlightClick}
           onDeleteHighlight={handleDeleteHighlight}
+          setHighlightSelected={setHighlightSelected}
         />
         <div className="relative flex-1 overflow-hidden">
           <div className="absolute inset-0 overflow-auto bg-gray-50">
@@ -181,7 +177,11 @@ function App() {
             </PdfLoader>
           </div>
         </div>
-        <RightSidebar selectedContent={selectedContent} selectedComment={selectedComment} />
+        <RightSidebar
+          selectedContent={selectedContent}
+          selectedComment={selectedComment}
+          onHighlightSelected={highlightSelected}
+        />
       </div>
       <UpdateElectron />
     </div>
